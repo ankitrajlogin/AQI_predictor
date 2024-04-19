@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Air Quality Index Calculator</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+    
+  </style>
+
+</head>
+<body>
+
+<!-- <div class="navbar">
+    
+    <h1>AQI Calculator</h1>
+</div> -->
+
+<nav class="nav">
+    <input type="checkbox" id="nav-check">
+    <div class="nav-header">
+      <div class="nav-title">
+        AQI Calculator
+      </div>
+    </div>
+    <div class="nav-btn">
+      <label for="nav-check">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+    </div>
+    
+    <ul class="nav-list">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+
+
+<header class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Welcome to Air Quality Index Calculator</h1>
+        <p class="hero-subtitle">Calculate air quality index based on pollutant concentration levels.</p>
+        <a href="#" class="hero-button">Get Started</a>
+    </div>
+</header>
+
+
+<!-- 
+<div class="hero">
+    
+    <h2>Welcome to Air Quality Index Calculator</h2>
+</div> -->
+
+<div class="container">
+    <div class = "hero-subtitle">
+        Enter Respective Air Pollutant Level in all the Section
+    </div>
+    <form id="aqiForm">
+        
+        <label for="pm25Input">PM2.5 Level:</label>
+        <input type="number" id="pm25Input" required>
+        <label for="pm10Input">PM10 Level:</label>
+        <input type="number" id="pm10Input" required>
+
+        <label for="noInput">NO Level:</label>
+        <input type="number" id="noInput" required>
+
+        <label for="no2Input">NO2 Level:</label>
+        <input type="number" id="no2Input" required>
+
+        <label for="coInput">CO Level:</label>
+        <input type="number" id="coInput" required>
+
+        <label for="so2Input">SO2 Level:</label>
+        <input type="number" id="so2Input" required>
+    </form>
+    <button type="button" onclick="calculateAQI()">Calculate AQI</button>
+
+    <div id="result"></div>
+</div>
+
+
+<div id="database">
+    <table id="dataTable">
+        <thead>
+          <tr>
+            <th>Latititude</th>
+            <th>Longitude</th>
+            <th>PM2.5 Level</th>
+            <th>PM10 Level</th>
+            <th>NO Level</th>
+            <th>NO2 Level</th>
+            <th>CO Level</th>
+            <th>SO2 Level</th>
+            <th>AQI</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+</div>
+
+
+
+<footer>
+    <p>&copy; 2024 Air Quality Index Calculator. All rights reserved.</p>
+</footer>
+
+<script>
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position){
+        const currentLocation = position.coords;
+        console.log(currentLocation);
+        console.log(currentLocation.longitude) ; 
+        console.log(currentLocation.latitude) ;
+    });
+    } 
+    else{
+        console.log("Geolocation is not supported by this browser.");
+    }
+
+    // console.log(currentLocation) ; 
+
+
+    function calculateAQI() {
+        let noLevel = (document.getElementById('noInput').value);
+        let no2Level = (document.getElementById('no2Input').value);
+        let pm25Level = (document.getElementById('pm25Input').value);
+        let pm10Level = (document.getElementById('pm10Input').value);
+        let coLevel = (document.getElementById('coInput').value);
+        let so2Level = (document.getElementById('so2Input').value);
+
+
+        if(noLevel == "" || pm25Level == "" || pm10Level == "" || coLevel == "" || so2Level == "" || no2Level == ""){
+            alert("Please fill in all fields")
+            return ; 
+        }
+
+        let n1 = parseFloat(noLevel) ; 
+        let n2 = parseFloat(no2Level) ; 
+        let n3 = parseFloat(pm25Level) ; 
+        let n4 = parseFloat(pm10Level) ; 
+        let n5 = parseFloat(coLevel) ; 
+        let n6 = parseFloat(so2Level) ; 
+
+        // array([ 1.08905583,  0.29919005, -0.04670101,  0.34387818, 11.21403345,
+        // 0.75736486])
+        
+        
+
+        // Calculate AQI (formula depends on pollutant, use appropriate formula)
+        // For simplicity, let's assume AQI is calculated as the sum of all levels
+        const aqi = -0.04670101*n1+ 0.34387818*n2+ 1.08905583*n3+ 0.29919005*n4+ 11.21403345*n5+0.75736486*n6 ;
+
+        document.getElementById('result').innerText = `Air Quality Index: ${aqi}`;
+
+
+
+        var table = document.getElementById("dataTable");
+        var row = table.insertRow();
+
+        let nlong = "91.7635072"
+        let nlat = "26.1586944"
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position){
+            const currentLocation = position.coords;
+            nlong = currentLocation.longitude ;  
+            nlat = currentLocation.latitude ;
+            console.log(currentLocation);
+            nlong = navigator.geolocation.getCurrentPosition.longitude ; 
+            nlat = navigator.geolocation.getCurrentPosition.latitude ;
+        });
+        } 
+
+        if (navigator.geolocation) {
+            console.log(navigator.geolocation) ;
+            // nlong = currentLocation.longitude ;  
+            // nlat = currentLocation.latitude ;
+        } 
+
+        var inputs = [
+            nlong,
+            nlat,
+            n1,
+            n2,
+            n3,
+            n4,
+            n5,
+            n6,
+            aqi
+        ];
+
+        
+
+        for (var i = 0; i < inputs.length; i++) {
+            var cell = row.insertCell(i);
+            cell.innerHTML = inputs[i];
+        }
+
+        clearForm()
+
+
+    }
+
+    function clearForm() {
+        document.getElementById("noInput").value = "";
+        document.getElementById("pm25Input").value = "";
+        document.getElementById("pm10Input").value = "";
+        document.getElementById("soInput").value = "";
+        document.getElementById("so2Input").value = "";
+        document.getElementById("coInput").value = "";
+    }
+
+
+
+</script>
+
+</body>
+</html>
